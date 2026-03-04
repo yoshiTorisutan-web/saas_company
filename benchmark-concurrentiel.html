@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Benchmark Concurrentiel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#f7f6f3; --white:#fff; --ink:#1a1a1a; --ink-mid:#555; --ink-light:#999;
+      --border:#e2e0db; --good:#1d6b3e; --good-bg:#edf7f1;
+      --warn:#8a5e00; --warn-bg:#fdf6e3; --bad:#8b1c1c; --bad-bg:#fdf0f0;
+    }
+    body { background:var(--bg); color:var(--ink); font-family:'IBM Plex Sans',sans-serif; font-weight:300; min-height:100vh; padding:56px 20px 80px; display:flex; flex-direction:column; align-items:center; }
+    .container { width:100%; max-width:960px; }
+    header { margin-bottom:48px; animation:rise .6s ease both; }
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-light); margin-bottom:14px; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:500; line-height:1.1; }
+    .header-line { width:40px; height:2px; background:var(--ink); margin-top:18px; }
+    section { background:var(--white); border:1px solid var(--border); border-radius:4px; margin-bottom:16px; overflow:hidden; animation:rise .5s ease both; }
+    section:nth-child(2){animation-delay:.06s} section:nth-child(3){animation-delay:.12s}
+    section:nth-child(4){animation-delay:.18s} section:nth-child(5){animation-delay:.24s}
+    section:nth-child(6){animation-delay:.30s} section:nth-child(7){animation-delay:.36s}
+    .sec-head { padding:18px 28px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .sec-head-l { display:flex; align-items:center; gap:10px; }
+    .sec-num { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-light); }
+    .sec-title { font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mid); }
+    .sec-body { padding:28px; }
+    /* competitors */
+    .comp-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .comp-tag { display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border); border-radius:3px; }
+    .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .comp-tag input { border:none; outline:none; background:transparent; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--ink); width:110px; }
+    .rm-btn { background:none; border:none; cursor:pointer; color:var(--ink-light); font-size:15px; padding:0 2px; }
+    .rm-btn:hover { color:var(--bad); }
+    /* criteria */
+    .crit-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+    .crit-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .crit-name { flex:1; min-width:150px; padding:9px 12px; border:1px solid var(--border); border-radius:3px; background:var(--bg); font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--ink); outline:none; transition:border-color .15s; }
+    .crit-name:focus { border-color:var(--ink); }
+    .w-wrap { display:flex; align-items:center; gap:6px; }
+    .w-label { font-size:10px; color:var(--ink-light); white-space:nowrap; }
+    .w-input { width:56px; padding:9px 8px; border:1px solid var(--border); border-radius:3px; background:var(--bg); font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); outline:none; text-align:center; -moz-appearance:textfield; }
+    .w-input::-webkit-outer-spin-button,.w-input::-webkit-inner-spin-button{-webkit-appearance:none}
+    .w-input:focus { border-color:var(--ink); }
+    /* matrix */
+    .matrix-wrap { overflow-x:auto; margin-bottom:24px; }
+    table { width:100%; border-collapse:collapse; min-width:480px; }
+    thead th { padding:10px 14px; font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:#fff; text-align:center; white-space:nowrap; }
+    thead th:first-child { background:var(--bg); color:var(--ink-light); text-align:left; border-right:1px solid var(--border); }
+    tbody tr { border-bottom:1px solid var(--border); }
+    tbody tr:last-child { border-bottom:none; }
+    tbody td { padding:10px 14px; }
+    tbody td:first-child { font-size:12px; color:var(--ink); border-right:1px solid var(--border); background:var(--bg); white-space:nowrap; }
+    .star-group { display:flex; justify-content:center; gap:2px; }
+    .star { cursor:pointer; font-size:16px; color:var(--border); transition:color .1s; line-height:1; }
+    .star.on { color:#f5b700; }
+    /* charts */
+    canvas { display:block; width:100% !important; }
+    .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:600px){.chart-grid{grid-template-columns:1fr}}
+    .chart-title { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-light); margin-bottom:12px; }
+    /* hbar */
+    .hbar-list { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+    .hbar-row { display:flex; align-items:center; gap:12px; }
+    .hbar-name { font-size:12px; color:var(--ink-mid); width:120px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .hbar-track { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+    .hbar-fill { height:100%; border-radius:4px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+    .hbar-val { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-mid); width:40px; text-align:right; flex-shrink:0; }
+    /* insight */
+    .insight { padding:14px 18px; border-radius:3px; border:1px solid var(--border); background:var(--bg); font-size:13px; line-height:1.65; color:var(--ink-mid); }
+    /* compare */
+    .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:480px){.compare-grid{grid-template-columns:1fr}}
+    .compare-col { border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+    .compare-col-head { padding:10px 16px; font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; background:var(--bg); color:var(--ink-mid); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .compare-col-body { padding:14px 16px; display:flex; flex-direction:column; gap:7px; }
+    .crow { display:flex; justify-content:space-between; align-items:center; }
+    .crow-label { font-size:11px; color:var(--ink-light); }
+    .crow-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .badge { font-size:10px; font-weight:500; padding:2px 6px; border-radius:2px; margin-left:6px; }
+    .badge.up{background:var(--good-bg);color:var(--good)} .badge.dn{background:var(--bad-bg);color:var(--bad)} .badge.flat{background:var(--bg);color:var(--ink-light)}
+    /* history */
+    .hist-empty { font-size:13px; color:var(--ink-light); font-style:italic; }
+    .hist-list { display:flex; flex-direction:column; gap:8px; }
+    .hist-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border:1px solid var(--border); border-radius:3px; cursor:pointer; transition:border-color .15s; flex-wrap:wrap; }
+    .hist-item:hover { border-color:var(--ink); }
+    .hist-date { font-size:10px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-light); flex-shrink:0; width:80px; }
+    .hist-kpis { display:flex; gap:16px; flex:1; flex-wrap:wrap; }
+    .hist-kpi-label { font-size:9px; color:var(--ink-light); text-transform:uppercase; letter-spacing:.06em; }
+    .hist-kpi-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .hist-del { background:none; border:none; cursor:pointer; color:var(--ink-light); font-size:15px; padding:0 4px; }
+    .hist-del:hover { color:var(--bad); }
+    /* actions */
+    .actions { display:flex; gap:10px; padding:18px 28px; border-top:1px solid var(--border); flex-wrap:wrap; }
+    .btn { padding:10px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border-radius:3px; cursor:pointer; transition:all .15s; border:1px solid var(--border); background:transparent; color:var(--ink-mid); }
+    .btn:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-sm { padding:4px 10px; font-size:10px; }
+    .btn-primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .btn-primary:hover { background:#333; }
+    .btn-add { padding:8px 14px; border:1px dashed var(--border); border-radius:3px; background:transparent; font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--ink-light); cursor:pointer; transition:all .15s; }
+    .btn-add:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-save { background:var(--good-bg); color:var(--good); border-color:rgba(29,107,62,.3); }
+    .btn-save:hover { background:var(--good); color:#fff; }
+    @keyframes rise { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <p class="eyebrow">Marketing · Outil PME</p>
+    <h1>Benchmark<br/>concurrentiel</h1>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- 01 Acteurs -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">01</span><span class="sec-title">Acteurs du marché</span></div></div>
+    <div class="sec-body">
+      <div class="comp-row" id="comp-row"></div>
+      <button class="btn-add" onclick="addComp()">+ Ajouter un concurrent</button>
+    </div>
+  </section>
+
+  <!-- 02 Critères -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">02</span><span class="sec-title">Critères d'évaluation</span></div></div>
+    <div class="sec-body">
+      <div class="crit-list" id="crit-list"></div>
+      <button class="btn-add" onclick="addCrit()">+ Ajouter un critère</button>
+    </div>
+  </section>
+
+  <!-- 03 Notation -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">03</span><span class="sec-title">Notation (1 à 5 étoiles)</span></div></div>
+    <div class="sec-body">
+      <div class="matrix-wrap"><table><thead id="mthead"></thead><tbody id="mtbody"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- 04 Résultats & graphiques -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">04</span><span class="sec-title">Résultats & visualisations</span></div></div>
+    <div class="sec-body">
+      <div class="hbar-list" id="hbar-list" style="margin-bottom:24px"></div>
+      <div class="chart-grid" style="margin-bottom:24px">
+        <div><div class="chart-title">Graphique radar</div><canvas id="chart-radar" height="220"></canvas></div>
+        <div><div class="chart-title">Scores par critère</div><canvas id="chart-crit" height="220"></canvas></div>
+      </div>
+      <div class="insight" id="insight">Évaluez vos concurrents pour visualiser votre positionnement.</div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="resetAll()">Réinitialiser</button>
+      <button class="btn btn-save" onclick="saveHist()">↓ Sauvegarder</button>
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-primary" onclick="window.print()">Imprimer</button>
+    </div>
+  </section>
+
+  <!-- 05 Comparaison -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">05</span><span class="sec-title">Comparaison avant / après</span></div></div>
+    <div class="sec-body">
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Snapshot A</span><button class="btn btn-sm" onclick="setRef()">Capturer</button></div>
+          <div class="compare-col-body" id="ref-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Cliquez "Capturer".</p></div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Snapshot B (actuel)</span></div>
+          <div class="compare-col-body" id="cur-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Renseignez les notations.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 Historique -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">06</span><span class="sec-title">Historique des snapshots</span></div></div>
+    <div class="sec-body"><div id="hist-wrap"><p class="hist-empty">Aucun snapshot sauvegardé.</p></div></div>
+    <div class="actions">
+      <button class="btn" onclick="clearHist()">Vider</button>
+      <button class="btn" onclick="exportHistCSV()">Export CSV</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  const COLORS=['#1a1a1a','#2d5a8e','#5a2d8e','#8e2d5a','#2d8e5a','#8e6b2d'];
+  let comps=[{id:0,name:'Vous'},{id:1,name:'Concurrent A'},{id:2,name:'Concurrent B'}];
+  let crits=[{id:0,name:'Prix',w:30},{id:1,name:'Qualité',w:25},{id:2,name:'Service client',w:20},{id:3,name:'Notoriété',w:15},{id:4,name:'Innovation',w:10}];
+  let scores={};
+  let nextCid=3,nextKid=5;
+  let ref=null,lastScores=null;
+  let hist=JSON.parse(localStorage.getItem('bm_h')||'[]');
+
+  const fD=()=>new Date().toLocaleDateString('fr-FR');
+
+  function gs(kid,cid){return(scores[kid]&&scores[kid][cid])||0;}
+  function ss(kid,cid,v){if(!scores[kid])scores[kid]={};scores[kid][cid]=v;renderAll();}
+
+  function renderComps(){
+    const row=document.getElementById('comp-row');
+    row.innerHTML='';
+    comps.forEach((c,i)=>{
+      const d=document.createElement('div');
+      d.className='comp-tag';
+      d.innerHTML=`<div class="dot" style="background:${COLORS[i%COLORS.length]}"></div><input type="text" value="${c.name}" placeholder="Nom"/>${i>0?`<button class="rm-btn">×</button>`:''}`;
+      d.querySelector('input').addEventListener('input',e=>{c.name=e.target.value;renderAll();});
+      if(i>0)d.querySelector('.rm-btn').addEventListener('click',()=>{comps=comps.filter(x=>x.id!==c.id);renderAll();});
+      row.appendChild(d);
+    });
+  }
+
+  function addComp(){if(comps.length>=6)return;comps.push({id:nextCid++,name:'Concurrent '+String.fromCharCode(64+comps.length)});renderAll();}
+
+  function renderCrits(){
+    const list=document.getElementById('crit-list');
+    list.innerHTML='';
+    crits.forEach(cr=>{
+      const row=document.createElement('div');row.className='crit-row';
+      row.innerHTML=`<input class="crit-name" type="text" value="${cr.name}" placeholder="Critère…"/><div class="w-wrap"><span class="w-label">Poids</span><input class="w-input" type="number" min="0" max="100" value="${cr.w}"/><span class="w-label">%</span></div><button class="rm-btn" title="Supprimer">×</button>`;
+      row.querySelector('.crit-name').addEventListener('input',e=>{cr.name=e.target.value;renderAll();});
+      row.querySelector('.w-input').addEventListener('input',e=>{cr.w=parseFloat(e.target.value)||0;renderAll();});
+      row.querySelector('.rm-btn').addEventListener('click',()=>{crits=crits.filter(x=>x.id!==cr.id);renderAll();});
+      list.appendChild(row);
+    });
+  }
+
+  function addCrit(){crits.push({id:nextKid++,name:'Critère '+(crits.length+1),w:10});renderAll();}
+
+  function renderMatrix(){
+    const head=document.getElementById('mthead'),body=document.getElementById('mtbody');
+    let hHtml='<tr><th style="background:var(--bg);color:var(--ink-light);text-align:left">Critère</th>';
+    comps.forEach((c,i)=>hHtml+=`<th style="background:${COLORS[i%COLORS.length]}">${c.name}</th>`);
+    head.innerHTML=hHtml+'</tr>';
+    body.innerHTML='';
+    crits.forEach(cr=>{
+      const tr=document.createElement('tr');
+      let html=`<td>${cr.name} <span style="font-size:10px;color:var(--ink-light)">(${cr.w}%)</span></td>`;
+      comps.forEach((comp,ci)=>{
+        const cur=gs(cr.id,comp.id);
+        let stars='';
+        for(let s=1;s<=5;s++)stars+=`<span class="star ${s<=cur?'on':''}" data-k="${cr.id}" data-c="${comp.id}" data-v="${s}">★</span>`;
+        html+=`<td style="text-align:center"><div class="star-group">${stars}</div></td>`;
+      });
+      tr.innerHTML=html;
+      tr.querySelectorAll('.star').forEach(star=>star.addEventListener('click',()=>ss(parseInt(star.dataset.k),parseInt(star.dataset.c),parseInt(star.dataset.v))));
+      body.appendChild(tr);
+    });
+  }
+
+  function computeScores(){
+    const tw=crits.reduce((s,c)=>s+c.w,0)||1;
+    return comps.map((comp,i)=>{
+      let w=0;
+      crits.forEach(cr=>{w+=gs(cr.id,comp.id)*(cr.w/tw);});
+      return{comp,score:w*20,color:COLORS[i%COLORS.length]};
+    });
+  }
+
+  function renderResults(){
+    const cs=computeScores();
+    const sorted=[...cs].sort((a,b)=>b.score-a.score);
+    const mx=Math.max(...cs.map(c=>c.score),1);
+
+    // hbars
+    const hbar=document.getElementById('hbar-list');
+    hbar.innerHTML=cs.map(c=>`
+      <div class="hbar-row">
+        <div class="hbar-name" style="color:${c.color};font-weight:${c.comp.id===0?500:300}">${c.comp.name}</div>
+        <div class="hbar-track"><div class="hbar-fill" style="width:${c.score}%;background:${c.color}"></div></div>
+        <div class="hbar-val">${Math.round(c.score)}</div>
+      </div>`).join('');
+
+    // Radar
+    renderRadar(cs);
+    renderCritChart(cs);
+
+    // insight
+    const you=cs.find(c=>c.comp.id===0);
+    const best=sorted[0];
+    const ins=document.getElementById('insight');
+    if(!you||you.score===0){ins.textContent='Évaluez vos concurrents pour visualiser votre positionnement.';return;}
+    const rank=sorted.findIndex(c=>c.comp.id===0)+1;
+    const gap=best.score-you.score;
+    let msg;
+    if(rank===1)msg=`Vous êtes en tête avec ${Math.round(you.score)}/100. Identifiez les critères où l'écart est le plus faible pour consolider votre position.`;
+    else if(rank===2)msg=`Vous êtes 2ème (${Math.round(you.score)}/100), à ${Math.round(gap)} points de ${best.comp.name}. Analysez les critères où vous êtes le plus en retrait.`;
+    else msg=`Vous êtes ${rank}ème (${Math.round(you.score)}/100). Écart de ${Math.round(gap)} points avec le leader (${best.comp.name}). Priorisez les critères à fort poids avec un score inférieur à 3.`;
+    ins.textContent=msg;
+
+    lastScores=cs.map(c=>({name:c.comp.name,score:c.score}));
+    renderCompare();
+  }
+
+  function renderRadar(cs){
+    const cv=document.getElementById('chart-radar');
+    const ctx=cv.getContext('2d');
+    const S=Math.min(cv.parentElement.offsetWidth,300);
+    cv.width=S*2;cv.height=S*2;cv.style.width=S+'px';cv.style.height=S+'px';
+    ctx.scale(2,2);ctx.clearRect(0,0,S,S);
+    if(!crits.length)return;
+    const cx=S/2,cy=S/2,R=S/2-30;
+    const n=crits.length;
+    const ang=i=>-Math.PI/2+(2*Math.PI*i/n);
+    // grid
+    for(let r=1;r<=5;r++){
+      ctx.beginPath();
+      for(let i=0;i<n;i++){const a=ang(i),x=cx+R*r/5*Math.cos(a),y=cy+R*r/5*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+      ctx.closePath();ctx.strokeStyle='#eee';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    // axes + labels
+    crits.forEach((cr,i)=>{
+      const a=ang(i),x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle='#ddd';ctx.lineWidth=0.5;ctx.stroke();
+      const lx=cx+(R+12)*Math.cos(a),ly=cy+(R+12)*Math.sin(a);
+      ctx.fillStyle='#999';ctx.font='8px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      const short=cr.name.length>10?cr.name.slice(0,10)+'…':cr.name;
+      ctx.fillText(short,lx,ly);
+    });
+    // each competitor
+    cs.forEach((c,ci)=>{
+      ctx.beginPath();
+      crits.forEach((cr,i)=>{
+        const v=gs(cr.id,c.comp.id)/5;
+        const a=ang(i),x=cx+R*v*Math.cos(a),y=cy+R*v*Math.sin(a);
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.closePath();
+      ctx.strokeStyle=c.color;ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle=c.color.replace(')',',0.08)').replace('rgb','rgba').replace('#','rgba(').replace(/([0-9a-f]{2})/gi,(m,p)=>parseInt(p,16)+',');
+      // simpler alpha fill
+      ctx.globalAlpha=0.08;ctx.fillStyle=c.color;ctx.fill();ctx.globalAlpha=1;
+    });
+  }
+
+  function renderCritChart(cs){
+    if(!crits.length)return;
+    const cv=document.getElementById('chart-crit');
+    const ctx=cv.getContext('2d');
+    const W=cv.parentElement.offsetWidth||300,H=220;
+    cv.width=W*2;cv.height=H*2;cv.style.width='100%';cv.style.height=H+'px';
+    ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+    const pad={l:10,r:10,t:10,b:30};
+    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+    const n=crits.length,bW=Math.min(12,cW/n/(cs.length+1)),gap=2;
+    const grpW=cs.length*(bW+gap)-gap+6;
+    crits.forEach((cr,ci)=>{
+      const grpX=pad.l+ci*(cW/n)+(cW/n-grpW)/2;
+      cs.forEach((c,ki)=>{
+        const v=gs(cr.id,c.comp.id)/5;
+        const x=grpX+ki*(bW+gap),h=Math.max(v*cH,2),y=pad.t+cH-h;
+        ctx.fillStyle=c.color;
+        ctx.beginPath();ctx.roundRect(x,y,bW,h,2);ctx.fill();
+      });
+      // crit label
+      ctx.fillStyle='#aaa';ctx.font='8px IBM Plex Sans,sans-serif';ctx.textAlign='center';
+      const short=cr.name.length>8?cr.name.slice(0,8)+'…':cr.name;
+      ctx.fillText(short,grpX+grpW/2,H-8);
+    });
+    // legend
+    ctx.textAlign='left';
+    cs.forEach((c,i)=>{
+      const x=pad.l+i*70;
+      if(x+60>W)return;
+      ctx.fillStyle=c.color;ctx.fillRect(x,4,8,8);
+      ctx.fillStyle='#aaa';ctx.font='8px IBM Plex Sans,sans-serif';
+      const n2=c.comp.name.length>8?c.comp.name.slice(0,8)+'…':c.comp.name;
+      ctx.fillText(n2,x+11,12);
+    });
+  }
+
+  // ── Comparaison ────────────────────────────────────────
+  function setRef(){
+    if(!lastScores){alert('Évaluez d\'abord les concurrents.');return;}
+    ref=JSON.parse(JSON.stringify({scores:lastScores,date:fD()}));
+    renderCompare();
+  }
+
+  function renderCompare(){
+    const refBody=document.getElementById('ref-body');
+    const curBody=document.getElementById('cur-body');
+    const renderCol=(data,el,isRef)=>{
+      if(!data){el.innerHTML='<p style="font-size:13px;color:var(--ink-light);font-style:italic">'+(isRef?'Cliquez "Capturer".':'Évaluez les concurrents.')+'</p>';return;}
+      const prevMap={};
+      if(!isRef&&ref)ref.scores.forEach(s=>prevMap[s.name]=s.score);
+      el.innerHTML=data.scores.map(s=>{
+        let badge='';
+        if(!isRef&&prevMap[s.name]!=null){
+          const d=s.score-prevMap[s.name],p=prevMap[s.name]?Math.abs(d/prevMap[s.name]*100).toFixed(1):0;
+          const cls=d===0?'flat':d>0?'up':'dn',arrow=d===0?'—':d>0?'↑':'↓';
+          badge=`<span class="badge ${cls}">${arrow} ${p} %</span>`;
+        }
+        return `<div class="crow"><span class="crow-label">${s.name}</span><span style="display:flex;align-items:center"><span class="crow-val">${Math.round(s.score)} / 100</span>${badge}</span></div>`;
+      }).join('');
+    };
+    renderCol(ref?{scores:ref.scores}:null,refBody,true);
+    renderCol(lastScores?{scores:lastScores}:null,curBody,false);
+  }
+
+  // ── Historique ─────────────────────────────────────────
+  function saveHist(){
+    if(!lastScores){alert('Aucun résultat à sauvegarder.');return;}
+    hist.unshift({id:Date.now(),date:fD(),scores:JSON.parse(JSON.stringify(lastScores))});
+    if(hist.length>20)hist=hist.slice(0,20);
+    localStorage.setItem('bm_h',JSON.stringify(hist));
+    renderHist();
+  }
+
+  function renderHist(){
+    const w=document.getElementById('hist-wrap');
+    if(!hist.length){w.innerHTML='<p class="hist-empty">Aucun snapshot sauvegardé.</p>';return;}
+    w.innerHTML='<div class="hist-list">'+hist.map(h=>`
+      <div class="hist-item">
+        <div class="hist-date">${h.date}</div>
+        <div class="hist-kpis">
+          ${h.scores.slice(0,4).map(s=>`<div><div class="hist-kpi-label">${s.name}</div><div class="hist-kpi-val">${Math.round(s.score)}</div></div>`).join('')}
+        </div>
+        <button class="hist-del" onclick="event.stopPropagation();delHist(${h.id})">×</button>
+      </div>`).join('')+'</div>';
+  }
+
+  function delHist(id){hist=hist.filter(x=>x.id!==id);localStorage.setItem('bm_h',JSON.stringify(hist));renderHist();}
+  function clearHist(){if(!confirm('Vider ?'))return;hist=[];localStorage.setItem('bm_h','[]');renderHist();}
+
+  // ── Export ─────────────────────────────────────────────
+  function dlCSV(rows,name){
+    const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+    a.download=name;a.click();
+  }
+
+  function exportCSV(){
+    if(!lastScores){alert('Aucun résultat.');return;}
+    const rows=[['Concurrent',...crits.map(c=>c.name+'('+c.w+'%)')],'Score global'];
+    comps.forEach((comp,i)=>{
+      const row=[comp.name,...crits.map(cr=>gs(cr.id,comp.id)),Math.round(lastScores[i]?.score||0)];
+      rows.push(row);
+    });
+    dlCSV(rows,'benchmark_'+Date.now()+'.csv');
+  }
+
+  function exportHistCSV(){
+    if(!hist.length){alert('Historique vide.');return;}
+    const rows=[['Date',...(hist[0]?.scores||[]).map(s=>s.name)]];
+    hist.forEach(h=>rows.push([h.date,...h.scores.map(s=>Math.round(s.score))]));
+    dlCSV(rows,'benchmark_historique_'+Date.now()+'.csv');
+  }
+
+  function renderAll(){renderComps();renderCrits();renderMatrix();renderResults();}
+
+  function resetAll(){
+    comps=[{id:0,name:'Vous'},{id:1,name:'Concurrent A'},{id:2,name:'Concurrent B'}];
+    crits=[{id:0,name:'Prix',w:30},{id:1,name:'Qualité',w:25},{id:2,name:'Service client',w:20},{id:3,name:'Notoriété',w:15},{id:4,name:'Innovation',w:10}];
+    scores={};nextCid=3;nextKid=5;
+    renderAll();
+  }
+
+  renderAll();
+  renderHist();
+</script>
+</body>
+</html>

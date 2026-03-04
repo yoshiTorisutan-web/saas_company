@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ROI Publicitaire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#f7f6f3; --white:#fff; --ink:#1a1a1a; --ink-mid:#555; --ink-light:#999;
+      --border:#e2e0db; --good:#1d6b3e; --good-bg:#edf7f1;
+      --warn:#8a5e00; --warn-bg:#fdf6e3; --bad:#8b1c1c; --bad-bg:#fdf0f0;
+    }
+    body { background:var(--bg); color:var(--ink); font-family:'IBM Plex Sans',sans-serif; font-weight:300; min-height:100vh; padding:56px 20px 80px; display:flex; flex-direction:column; align-items:center; }
+    .container { width:100%; max-width:760px; }
+    header { margin-bottom:48px; animation:rise .6s ease both; }
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-light); margin-bottom:14px; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:500; line-height:1.1; }
+    .header-line { width:40px; height:2px; background:var(--ink); margin-top:18px; }
+    section { background:var(--white); border:1px solid var(--border); border-radius:4px; margin-bottom:16px; overflow:hidden; animation:rise .5s ease both; }
+    section:nth-child(2){animation-delay:.06s} section:nth-child(3){animation-delay:.12s}
+    section:nth-child(4){animation-delay:.18s} section:nth-child(5){animation-delay:.24s} section:nth-child(6){animation-delay:.30s}
+    .sec-head { padding:18px 28px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .sec-head-l { display:flex; align-items:center; gap:10px; }
+    .sec-num { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-light); letter-spacing:.05em; }
+    .sec-title { font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mid); }
+    .sec-body { padding:28px; }
+    .fields { display:grid; grid-template-columns:1fr 1fr; gap:20px 24px; }
+    .field { display:flex; flex-direction:column; gap:7px; }
+    @media(max-width:480px){.fields{grid-template-columns:1fr}}
+    label { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); }
+    .input-wrap { position:relative; }
+    input[type=number] { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:3px; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:18px; padding:12px 46px 12px 14px; outline:none; transition:border-color .15s,background .15s; -moz-appearance:textfield; }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+    input[type=number]:focus { border-color:var(--ink); background:var(--white); }
+    .unit { position:absolute; right:13px; top:50%; transform:translateY(-50%); font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-light); pointer-events:none; }
+    .chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+    .chip { padding:7px 14px; border:1px solid var(--border); border-radius:3px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--ink-mid); cursor:pointer; transition:all .15s; background:transparent; }
+    .chip.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .kpi-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:3px; overflow:hidden; margin-bottom:20px; }
+    @media(max-width:520px){.kpi-strip{grid-template-columns:1fr 1fr}}
+    .kpi { background:var(--white); padding:18px 16px; }
+    .kpi.primary { background:var(--ink); }
+    .kpi-label { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-light); margin-bottom:8px; }
+    .kpi.primary .kpi-label { color:rgba(255,255,255,.45); }
+    .kpi-value { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; color:var(--ink); }
+    .kpi.primary .kpi-value { color:#fff; }
+    .kpi-value.good{color:var(--good)} .kpi-value.warn{color:var(--warn)} .kpi-value.bad{color:var(--bad)}
+    .kpi-delta { font-size:10px; margin-top:4px; font-family:'IBM Plex Mono',monospace; }
+    .kpi-delta.up{color:var(--good)} .kpi-delta.dn{color:var(--bad)} .kpi-delta.flat{color:var(--ink-light)}
+    .score-wrap { margin-bottom:24px; }
+    .score-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+    .score-label { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); }
+    .score-num { font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:500; color:var(--ink); }
+    .score-num.good{color:var(--good)} .score-num.warn{color:var(--warn)} .score-num.bad{color:var(--bad)}
+    .score-track { height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+    .score-fill { height:100%; width:0%; border-radius:3px; transition:width .5s cubic-bezier(.4,0,.2,1),background .3s; }
+    .score-ticks { display:flex; justify-content:space-between; font-size:9px; color:var(--ink-light); margin-top:6px; }
+    .analyse { display:flex; gap:12px; align-items:flex-start; padding:16px 18px; border-radius:3px; border:1px solid var(--border); background:var(--bg); font-size:13px; line-height:1.65; color:var(--ink-mid); }
+    .analyse.good{background:var(--good-bg);border-color:rgba(29,107,62,.2);color:var(--good)}
+    .analyse.warn{background:var(--warn-bg);border-color:rgba(138,94,0,.2);color:var(--warn)}
+    .analyse.bad{background:var(--bad-bg);border-color:rgba(139,28,28,.2);color:var(--bad)}
+    .analyse-icon { font-size:14px; flex-shrink:0; margin-top:2px; }
+    /* chart */
+    .chart-wrap { margin-top:20px; }
+    .chart-title { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-light); margin-bottom:12px; }
+    canvas { display:block; width:100% !important; }
+    /* compare */
+    .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:480px){.compare-grid{grid-template-columns:1fr}}
+    .compare-col { border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+    .compare-col-head { padding:10px 16px; font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; background:var(--bg); color:var(--ink-mid); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .compare-col-body { padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+    .compare-row { display:flex; justify-content:space-between; align-items:center; }
+    .compare-row-label { font-size:11px; color:var(--ink-light); }
+    .compare-row-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .badge { font-size:10px; font-weight:500; padding:2px 6px; border-radius:2px; margin-left:6px; }
+    .badge.up{background:var(--good-bg);color:var(--good)} .badge.dn{background:var(--bad-bg);color:var(--bad)} .badge.flat{background:var(--bg);color:var(--ink-light)}
+    /* history */
+    .hist-empty { font-size:13px; color:var(--ink-light); font-style:italic; }
+    .hist-list { display:flex; flex-direction:column; gap:8px; }
+    .hist-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border:1px solid var(--border); border-radius:3px; cursor:pointer; transition:border-color .15s; background:var(--white); flex-wrap:wrap; }
+    .hist-item:hover { border-color:var(--ink); }
+    .hist-canal { font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); width:110px; flex-shrink:0; }
+    .hist-kpis { display:flex; gap:16px; flex:1; flex-wrap:wrap; }
+    .hist-kpi-label { font-size:9px; color:var(--ink-light); letter-spacing:.06em; text-transform:uppercase; }
+    .hist-kpi-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .hist-date { font-size:10px; color:var(--ink-light); flex-shrink:0; }
+    .hist-del { background:none; border:none; cursor:pointer; color:var(--ink-light); font-size:15px; padding:0 4px; }
+    .hist-del:hover { color:var(--bad); }
+    /* actions */
+    .actions { display:flex; gap:10px; padding:18px 28px; border-top:1px solid var(--border); flex-wrap:wrap; }
+    .btn { padding:10px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border-radius:3px; cursor:pointer; transition:all .15s; border:1px solid var(--border); background:transparent; color:var(--ink-mid); }
+    .btn:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-sm { padding:4px 10px; font-size:10px; }
+    .btn-primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .btn-primary:hover { background:#333; }
+    .btn-save { background:var(--good-bg); color:var(--good); border-color:rgba(29,107,62,.3); }
+    .btn-save:hover { background:var(--good); color:#fff; border-color:var(--good); }
+    @keyframes rise { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <p class="eyebrow">Marketing · Outil PME</p>
+    <h1>Calculateur de ROI<br/>publicitaire</h1>
+    <div class="header-line"></div>
+  </header>
+
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">01</span><span class="sec-title">Campagne</span></div></div>
+    <div class="sec-body">
+      <div class="chips">
+        <button class="chip active" onclick="setCanal('Google Ads',this)">Google Ads</button>
+        <button class="chip" onclick="setCanal('Facebook / Instagram',this)">Facebook / Instagram</button>
+        <button class="chip" onclick="setCanal('LinkedIn',this)">LinkedIn</button>
+        <button class="chip" onclick="setCanal('Email',this)">E-mail</button>
+        <button class="chip" onclick="setCanal('Autre',this)">Autre</button>
+      </div>
+      <div class="fields">
+        <div class="field"><label>Budget investi</label><div class="input-wrap"><input type="number" id="budget" min="0" step="10" placeholder="0" oninput="calc()"/><span class="unit">€</span></div></div>
+        <div class="field"><label>Revenus générés</label><div class="input-wrap"><input type="number" id="revenus" min="0" step="10" placeholder="0" oninput="calc()"/><span class="unit">€</span></div></div>
+        <div class="field"><label>Nombre de leads</label><div class="input-wrap"><input type="number" id="leads" min="0" step="1" placeholder="0" oninput="calc()"/><span class="unit">#</span></div></div>
+        <div class="field"><label>Clics</label><div class="input-wrap"><input type="number" id="clics" min="0" step="1" placeholder="0" oninput="calc()"/><span class="unit">#</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">02</span><span class="sec-title">Résultats</span></div></div>
+    <div class="sec-body">
+      <div class="kpi-strip">
+        <div class="kpi primary"><div class="kpi-label">ROI</div><div class="kpi-value" id="r-roi">—</div><div class="kpi-delta" id="d-roi"></div></div>
+        <div class="kpi"><div class="kpi-label">ROAS</div><div class="kpi-value" id="r-roas">—</div><div class="kpi-delta" id="d-roas"></div></div>
+        <div class="kpi"><div class="kpi-label">Coût / lead</div><div class="kpi-value" id="r-cpl">—</div><div class="kpi-delta" id="d-cpl"></div></div>
+        <div class="kpi"><div class="kpi-label">Taux conv.</div><div class="kpi-value" id="r-conv">—</div><div class="kpi-delta" id="d-conv"></div></div>
+      </div>
+      <div class="score-wrap">
+        <div class="score-header"><span class="score-label">Score de rentabilité</span><span class="score-num" id="score-num">—</span></div>
+        <div class="score-track"><div class="score-fill" id="score-fill"></div></div>
+        <div class="score-ticks"><span>Déficitaire</span><span>Neutre</span><span>Rentable</span><span>Excellent</span></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Budget · Revenus · Bénéfice</div>
+        <canvas id="chart-main" height="160"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">03</span><span class="sec-title">Analyse</span></div></div>
+    <div class="sec-body">
+      <div class="analyse" id="analyse"><span class="analyse-icon">—</span><span>Renseignez votre budget et vos revenus pour obtenir une analyse.</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="resetForm()">Réinitialiser</button>
+      <button class="btn btn-save" onclick="saveHistory()">↓ Sauvegarder</button>
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-primary" onclick="window.print()">Imprimer</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">04</span><span class="sec-title">Comparaison avant / après</span></div></div>
+    <div class="sec-body">
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Référence (A)</span><button class="btn btn-sm" onclick="setRef()">Définir</button></div>
+          <div class="compare-col-body" id="ref-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Cliquez sur "Définir" pour capturer la campagne actuelle.</p></div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Actuelle (B)</span></div>
+          <div class="compare-col-body" id="cur-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Renseignez les paramètres ci-dessus.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">05</span><span class="sec-title">Historique</span></div></div>
+    <div class="sec-body"><div id="hist-wrap"><p class="hist-empty">Aucune campagne sauvegardée.</p></div></div>
+    <div class="actions">
+      <button class="btn" onclick="clearHist()">Vider</button>
+      <button class="btn" onclick="exportHistCSV()">Export CSV</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  let canal='Google Ads', ref=null, lastR=null;
+  let hist=JSON.parse(localStorage.getItem('roi_h')||'[]');
+
+  const fE=n=>new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' €';
+  const fP=n=>new Intl.NumberFormat('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}).format(n)+' %';
+  const fX=n=>'× '+n.toFixed(2);
+  const fD=()=>new Date().toLocaleDateString('fr-FR');
+
+  function setCanal(c,btn){canal=c;document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calc();}
+
+  function setKpi(id,v,cls){const e=document.getElementById(id);e.textContent=v;e.className='kpi-value'+(cls?' '+cls:'');}
+  function setDelta(id,cur,prev,lower){
+    const e=document.getElementById(id);
+    if(prev==null||cur==null||prev===0){e.textContent='';e.className='kpi-delta';return;}
+    const d=cur-prev,p=Math.abs(d/prev*100);
+    const better=lower?d<0:d>0;
+    const cls=d===0?'flat':better?'up':'dn';
+    e.textContent=(d>0?'↑':'↓')+' '+p.toFixed(1)+' %';
+    e.className='kpi-delta '+cls;
+  }
+
+  function calc(){
+    const b=parseFloat(document.getElementById('budget').value);
+    const r=parseFloat(document.getElementById('revenus').value);
+    const l=parseFloat(document.getElementById('leads').value);
+    const c=parseFloat(document.getElementById('clics').value);
+    if(isNaN(b)||isNaN(r)||b<=0||r<=0){
+      ['r-roi','r-roas','r-cpl','r-conv'].forEach(id=>setKpi(id,'—'));
+      ['d-roi','d-roas','d-cpl','d-conv'].forEach(id=>document.getElementById(id).textContent='');
+      document.getElementById('score-fill').style.width='0%';
+      document.getElementById('score-num').textContent='—';
+      document.getElementById('score-num').className='score-num';
+      document.getElementById('analyse').className='analyse';
+      document.getElementById('analyse').innerHTML='<span class="analyse-icon">—</span><span>Renseignez votre budget et vos revenus.</span>';
+      lastR=null; renderCompare(); renderChart(null); return;
+    }
+    const roi=((r-b)/b)*100, roas=r/b;
+    const cpl=(!isNaN(l)&&l>0)?b/l:null;
+    const conv=(!isNaN(l)&&!isNaN(c)&&c>0)?(l/c)*100:null;
+    lastR={canal,budget:b,revenus:r,leads:isNaN(l)?null:l,clics:isNaN(c)?null:c,roi,roas,cpl,conv,date:fD()};
+
+    const roiCls=roi<0?'bad':roi<50?'warn':'good';
+    setKpi('r-roi',fP(roi),roiCls);
+    setKpi('r-roas',fX(roas),roas<1?'bad':roas<2?'warn':'good');
+    setKpi('r-cpl',cpl!==null?fE(cpl):'N/A');
+    setKpi('r-conv',conv!==null?fP(conv):'N/A');
+    if(ref){setDelta('d-roi',roi,ref.roi,false);setDelta('d-roas',roas,ref.roas,false);setDelta('d-cpl',cpl,ref.cpl,true);setDelta('d-conv',conv,ref.conv,false);}
+    else{['d-roi','d-roas','d-cpl','d-conv'].forEach(id=>document.getElementById(id).textContent='');}
+
+    let score=0;
+    if(roas>=1)score+=20;if(roas>=2)score+=20;if(roas>=4)score+=20;if(roi>=50)score+=20;if(roi>=100)score+=20;
+    const sEl=document.getElementById('score-num');
+    const sCls=score<40?'bad':score<70?'warn':'good';
+    sEl.textContent=score+' / 100'; sEl.className='score-num '+sCls;
+    const sf=document.getElementById('score-fill');
+    sf.style.width=score+'%'; sf.style.background=score<40?'#8b1c1c':score<70?'#b07d00':'#1d6b3e';
+
+    const bench={'Google Ads':2,'Facebook / Instagram':3,'LinkedIn':4,'Email':8,'Autre':3};
+    const bR=bench[canal]||3;
+    let icon,msg;
+    if(roas<1){icon='↓';msg=`Campagne déficitaire. Minimum requis : <strong>${fE(b)}</strong> de revenus (ROAS ≥ 1).`;}
+    else if(roas<bR){icon='~';msg=`ROAS ${fX(roas)} — sous le benchmark ${canal} (× ${bR}). Cible : <strong>${fE(b*bR)}</strong> de revenus.`;}
+    else if(roi<100){icon='✓';msg=`Campagne rentable — ROI ${fP(roi)}. Bénéfice net : <strong>${fE(r-b)}</strong>. ROAS au-dessus du benchmark (× ${bR}).`;}
+    else{icon='✦';msg=`Excellente performance — ROI ${fP(roi)}. Un doublement du budget pourrait générer <strong>${fE((r-b)*2)}</strong> de bénéfice.`;}
+    const a=document.getElementById('analyse');
+    a.className='analyse '+roiCls;
+    a.innerHTML=`<span class="analyse-icon">${icon}</span><span>${msg}</span>`;
+
+    renderCompare(); renderChart(lastR);
+  }
+
+  // ── Chart (canvas) ─────────────────────────────────────
+  function renderChart(r){
+    const cv=document.getElementById('chart-main');
+    const ctx=cv.getContext('2d');
+    const W=cv.parentElement.offsetWidth||680, H=160;
+    cv.width=W*2; cv.height=H*2; cv.style.width='100%'; cv.style.height=H+'px';
+    ctx.scale(2,2); ctx.clearRect(0,0,W,H);
+    if(!r)return;
+    const bars=[
+      {label:'Budget',v:r.budget,color:'#c5c2bb'},
+      {label:'Revenus',v:r.revenus,color:r.roi>=0?'#1d6b3e':'#8b1c1c'},
+      {label:'Bénéfice',v:Math.max(r.revenus-r.budget,0),color:r.roi>=50?'#2a9e60':'#b07d00'},
+    ];
+    const mx=Math.max(...bars.map(b=>b.v),1);
+    const bW=56,gap=48,total=bars.length*(bW+gap)-gap;
+    const sx=(W-total)/2, cH=H-48, tp=16;
+    bars.forEach((b,i)=>{
+      const x=sx+i*(bW+gap), h=Math.max(b.v/mx*cH,2), y=tp+cH-h;
+      ctx.fillStyle=b.color;
+      ctx.beginPath(); ctx.roundRect(x,y,bW,h,3); ctx.fill();
+      ctx.fillStyle='#333'; ctx.font='500 9px IBM Plex Mono,monospace'; ctx.textAlign='center';
+      const s=b.v>=1000?(b.v/1000).toFixed(1)+'k €':b.v.toFixed(0)+' €';
+      ctx.fillText(s,x+bW/2,y-5);
+      ctx.fillStyle='#aaa'; ctx.font='400 9px IBM Plex Sans,sans-serif';
+      ctx.fillText(b.label,x+bW/2,H-8);
+    });
+  }
+
+  // ── Comparaison ────────────────────────────────────────
+  function setRef(){if(!lastR){alert('Calculez d\'abord une campagne.');return;}ref={...lastR};renderCompare();calc();}
+
+  function renderCompare(){
+    const renderCol=(r,elId,isRef)=>{
+      const el=document.getElementById(elId);
+      if(!r){el.innerHTML='<p style="font-size:13px;color:var(--ink-light);font-style:italic">'+(isRef?'Cliquez "Définir".':'Renseignez les paramètres.')+'</p>';return;}
+      const rows=[
+        {l:'Canal',v:r.canal,raw:null},
+        {l:'Budget',v:fE(r.budget),raw:r.budget,prev:ref?.budget,low:false},
+        {l:'Revenus',v:fE(r.revenus),raw:r.revenus,prev:ref?.revenus,low:false},
+        {l:'ROI',v:fP(r.roi),raw:r.roi,prev:ref?.roi,low:false},
+        {l:'ROAS',v:fX(r.roas),raw:r.roas,prev:ref?.roas,low:false},
+        {l:'Coût/lead',v:r.cpl?fE(r.cpl):'N/A',raw:r.cpl,prev:ref?.cpl,low:true},
+      ];
+      el.innerHTML=rows.map(row=>{
+        let badge='';
+        if(!isRef&&row.raw!=null&&row.prev!=null){
+          const d=row.raw-row.prev,p=row.prev!==0?Math.abs(d/row.prev*100).toFixed(1):0;
+          const better=row.low?d<0:d>0,cls=d===0?'flat':better?'up':'dn',arrow=d===0?'—':d>0?'↑':'↓';
+          badge=`<span class="badge ${cls}">${arrow} ${p} %</span>`;
+        }
+        return `<div class="compare-row"><span class="compare-row-label">${row.l}</span><span style="display:flex;align-items:center"><span class="compare-row-val">${row.v}</span>${badge}</span></div>`;
+      }).join('');
+    };
+    renderCol(ref,'ref-body',true);
+    renderCol(lastR,'cur-body',false);
+  }
+
+  // ── Historique ─────────────────────────────────────────
+  function saveHistory(){
+    if(!lastR){alert('Aucun résultat à sauvegarder.');return;}
+    hist.unshift({...lastR,id:Date.now()});
+    if(hist.length>20)hist=hist.slice(0,20);
+    localStorage.setItem('roi_h',JSON.stringify(hist));
+    renderHist();
+  }
+
+  function renderHist(){
+    const w=document.getElementById('hist-wrap');
+    if(!hist.length){w.innerHTML='<p class="hist-empty">Aucune campagne sauvegardée.</p>';return;}
+    w.innerHTML='<div class="hist-list">'+hist.map(h=>`
+      <div class="hist-item" onclick="loadHist(${h.id})">
+        <div class="hist-canal">${h.canal}</div>
+        <div class="hist-kpis">
+          <div><div class="hist-kpi-label">Budget</div><div class="hist-kpi-val">${fE(h.budget)}</div></div>
+          <div><div class="hist-kpi-label">Revenus</div><div class="hist-kpi-val">${fE(h.revenus)}</div></div>
+          <div><div class="hist-kpi-label">ROI</div><div class="hist-kpi-val">${fP(h.roi)}</div></div>
+          <div><div class="hist-kpi-label">ROAS</div><div class="hist-kpi-val">${fX(h.roas)}</div></div>
+        </div>
+        <div class="hist-date">${h.date}</div>
+        <button class="hist-del" onclick="event.stopPropagation();delHist(${h.id})">×</button>
+      </div>`).join('')+'</div>';
+  }
+
+  function loadHist(id){
+    const h=hist.find(x=>x.id===id);if(!h)return;
+    document.getElementById('budget').value=h.budget;
+    document.getElementById('revenus').value=h.revenus;
+    document.getElementById('leads').value=h.leads||'';
+    document.getElementById('clics').value=h.clics||'';
+    document.querySelectorAll('.chip').forEach(b=>{
+      if(b.textContent===h.canal){b.classList.add('active');canal=h.canal;}
+      else b.classList.remove('active');
+    });
+    calc();
+  }
+
+  function delHist(id){hist=hist.filter(x=>x.id!==id);localStorage.setItem('roi_h',JSON.stringify(hist));renderHist();}
+  function clearHist(){if(!confirm('Vider l\'historique ?'))return;hist=[];localStorage.setItem('roi_h','[]');renderHist();}
+
+  // ── Export CSV ─────────────────────────────────────────
+  function dlCSV(rows,name){
+    const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+    a.download=name; a.click();
+  }
+
+  function exportCSV(){
+    if(!lastR){alert('Aucun résultat.');return;}
+    dlCSV([
+      ['Paramètre','Valeur'],
+      ['Canal',lastR.canal],['Date',lastR.date],
+      ['Budget (€)',lastR.budget],['Revenus (€)',lastR.revenus],
+      ['Leads',lastR.leads??''],['Clics',lastR.clics??''],
+      ['ROI (%)',lastR.roi.toFixed(2)],['ROAS',lastR.roas.toFixed(2)],
+      ['Coût/lead (€)',lastR.cpl?lastR.cpl.toFixed(2):''],
+      ['Taux conv. (%)',lastR.conv?lastR.conv.toFixed(2):''],
+    ],'roi_'+Date.now()+'.csv');
+  }
+
+  function exportHistCSV(){
+    if(!hist.length){alert('Historique vide.');return;}
+    const rows=[['Date','Canal','Budget','Revenus','ROI %','ROAS','Leads','Coût/lead']];
+    hist.forEach(h=>rows.push([h.date,h.canal,h.budget,h.revenus,h.roi.toFixed(2),h.roas.toFixed(2),h.leads??'',h.cpl?h.cpl.toFixed(2):'']));
+    dlCSV(rows,'roi_historique_'+Date.now()+'.csv');
+  }
+
+  function resetForm(){['budget','revenus','leads','clics'].forEach(id=>document.getElementById(id).value='');calc();}
+
+  renderHist();
+</script>
+</body>
+</html>

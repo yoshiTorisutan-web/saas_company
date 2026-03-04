@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulateur Pricing Freemium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#f7f6f3; --white:#fff; --ink:#1a1a1a; --ink-mid:#555; --ink-light:#999;
+      --border:#e2e0db; --good:#1d6b3e; --good-bg:#edf7f1;
+      --warn:#8a5e00; --warn-bg:#fdf6e3; --bad:#8b1c1c; --bad-bg:#fdf0f0;
+      --ca:#1a1a1a; --cb:#2d5a8e; --cc:#5a2d8e;
+    }
+    body { background:var(--bg); color:var(--ink); font-family:'IBM Plex Sans',sans-serif; font-weight:300; min-height:100vh; padding:56px 20px 80px; display:flex; flex-direction:column; align-items:center; }
+    .container { width:100%; max-width:860px; }
+    header { margin-bottom:48px; animation:rise .6s ease both; }
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-light); margin-bottom:14px; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:500; line-height:1.1; }
+    .header-line { width:40px; height:2px; background:var(--ink); margin-top:18px; }
+    section { background:var(--white); border:1px solid var(--border); border-radius:4px; margin-bottom:16px; overflow:hidden; animation:rise .5s ease both; }
+    section:nth-child(2){animation-delay:.06s} section:nth-child(3){animation-delay:.12s}
+    section:nth-child(4){animation-delay:.18s} section:nth-child(5){animation-delay:.24s} section:nth-child(6){animation-delay:.30s}
+    .sec-head { padding:18px 28px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .sec-head-l { display:flex; align-items:center; gap:10px; }
+    .sec-num { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-light); }
+    .sec-title { font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mid); }
+    .sec-body { padding:28px; }
+    label { font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); }
+    .field { display:flex; flex-direction:column; gap:7px; }
+    .global-fields { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    @media(max-width:600px){.global-fields{grid-template-columns:1fr 1fr}}
+    .input-wrap { position:relative; }
+    input[type=number] { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:3px; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:17px; padding:11px 42px 11px 13px; outline:none; transition:border-color .15s; -moz-appearance:textfield; }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+    input[type=number]:focus { border-color:var(--ink); }
+    .unit { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-light); pointer-events:none; }
+    /* plans */
+    .plans-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    @media(max-width:640px){.plans-grid{grid-template-columns:1fr}}
+    .plan-card { border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .plan-header { padding:14px 18px; }
+    .plan-header.a{background:var(--ca)} .plan-header.b{background:var(--cb)} .plan-header.c{background:var(--cc)}
+    .plan-name-input { background:transparent; border:none; outline:none; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:500; color:#fff; letter-spacing:.05em; text-transform:uppercase; width:100%; }
+    .plan-body { padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+    .plan-label { font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:5px; }
+    input.plan-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:3px; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:16px; padding:9px 38px 9px 12px; outline:none; transition:border-color .15s; -moz-appearance:textfield; }
+    input.plan-input::-webkit-outer-spin-button, input.plan-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+    input.plan-input:focus { border-color:var(--ink); }
+    /* résultats */
+    .results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+    @media(max-width:640px){.results-grid{grid-template-columns:1fr}}
+    .result-plan { border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .result-plan-head { padding:10px 16px; font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#fff; }
+    .result-plan-head.a{background:var(--ca)} .result-plan-head.b{background:var(--cb)} .result-plan-head.c{background:var(--cc)}
+    .result-plan-body { padding:16px; }
+    .rrow { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border); }
+    .rrow:last-child { border-bottom:none; }
+    .rrow-label { font-size:11px; color:var(--ink-light); }
+    .rrow-val { font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:500; }
+    /* total */
+    .total-bar { background:var(--ink); border-radius:4px; padding:20px 24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:20px; }
+    .total-item { display:flex; flex-direction:column; gap:4px; }
+    .total-label { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.45); }
+    .total-val { font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:500; color:#fff; }
+    .total-val.hl { color:#a8d5b8; }
+    /* chart */
+    .chart-wrap { margin-bottom:0; }
+    .chart-title { font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-light); margin-bottom:12px; }
+    canvas { display:block; width:100% !important; }
+    /* compare */
+    .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:480px){.compare-grid{grid-template-columns:1fr}}
+    .compare-col { border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+    .compare-col-head { padding:10px 16px; font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; background:var(--bg); color:var(--ink-mid); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    .compare-col-body { padding:14px 16px; display:flex; flex-direction:column; gap:7px; }
+    .crow { display:flex; justify-content:space-between; align-items:center; }
+    .crow-label { font-size:11px; color:var(--ink-light); }
+    .crow-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .badge { font-size:10px; font-weight:500; padding:2px 6px; border-radius:2px; margin-left:6px; }
+    .badge.up{background:var(--good-bg);color:var(--good)} .badge.dn{background:var(--bad-bg);color:var(--bad)} .badge.flat{background:var(--bg);color:var(--ink-light)}
+    /* history */
+    .hist-empty { font-size:13px; color:var(--ink-light); font-style:italic; }
+    .hist-list { display:flex; flex-direction:column; gap:8px; }
+    .hist-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border:1px solid var(--border); border-radius:3px; cursor:pointer; transition:border-color .15s; flex-wrap:wrap; }
+    .hist-item:hover { border-color:var(--ink); }
+    .hist-label { font-size:10px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-light); flex-shrink:0; }
+    .hist-kpis { display:flex; gap:16px; flex:1; flex-wrap:wrap; }
+    .hist-kpi-label { font-size:9px; color:var(--ink-light); text-transform:uppercase; letter-spacing:.06em; }
+    .hist-kpi-val { font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; }
+    .hist-date { font-size:10px; color:var(--ink-light); }
+    .hist-del { background:none; border:none; cursor:pointer; color:var(--ink-light); font-size:15px; padding:0 4px; }
+    .hist-del:hover { color:var(--bad); }
+    /* actions */
+    .actions { display:flex; gap:10px; padding:18px 28px; border-top:1px solid var(--border); flex-wrap:wrap; }
+    .btn { padding:10px 20px; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border-radius:3px; cursor:pointer; transition:all .15s; border:1px solid var(--border); background:transparent; color:var(--ink-mid); }
+    .btn:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-sm { padding:4px 10px; font-size:10px; }
+    .btn-primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .btn-primary:hover { background:#333; }
+    .btn-save { background:var(--good-bg); color:var(--good); border-color:rgba(29,107,62,.3); }
+    .btn-save:hover { background:var(--good); color:#fff; border-color:var(--good); }
+    @keyframes rise { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <p class="eyebrow">Marketing · Outil PME</p>
+    <h1>Simulateur de<br/>pricing freemium</h1>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- 01 Base utilisateurs -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">01</span><span class="sec-title">Base d'utilisateurs</span></div></div>
+    <div class="sec-body">
+      <div class="global-fields">
+        <div class="field"><label>Utilisateurs totaux</label><div class="input-wrap"><input type="number" id="total" value="10000" min="0" oninput="calc()"/><span class="unit">#</span></div></div>
+        <div class="field"><label>Croissance / mois</label><div class="input-wrap"><input type="number" id="growth" value="5" min="0" max="100" oninput="calc()"/><span class="unit">%</span></div></div>
+        <div class="field"><label>Churn / mois</label><div class="input-wrap"><input type="number" id="churn" value="3" min="0" max="100" oninput="calc()"/><span class="unit">%</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Plans -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">02</span><span class="sec-title">Formules tarifaires</span></div></div>
+    <div class="sec-body">
+      <div class="plans-grid">
+        <div class="plan-card"><div class="plan-header a"><input class="plan-name-input" id="name-a" type="text" value="Free" oninput="calc()"/></div>
+          <div class="plan-body">
+            <div><div class="plan-label">Prix / mois</div><div class="input-wrap"><input class="plan-input" type="number" id="price-a" value="0" min="0" step="1" oninput="calc()"/><span class="unit">€</span></div></div>
+            <div><div class="plan-label">Taux de conversion</div><div class="input-wrap"><input class="plan-input" type="number" id="conv-a" value="70" min="0" max="100" oninput="calc()"/><span class="unit">%</span></div></div>
+          </div>
+        </div>
+        <div class="plan-card"><div class="plan-header b"><input class="plan-name-input" id="name-b" type="text" value="Pro" oninput="calc()"/></div>
+          <div class="plan-body">
+            <div><div class="plan-label">Prix / mois</div><div class="input-wrap"><input class="plan-input" type="number" id="price-b" value="29" min="0" step="1" oninput="calc()"/><span class="unit">€</span></div></div>
+            <div><div class="plan-label">Taux de conversion</div><div class="input-wrap"><input class="plan-input" type="number" id="conv-b" value="22" min="0" max="100" oninput="calc()"/><span class="unit">%</span></div></div>
+          </div>
+        </div>
+        <div class="plan-card"><div class="plan-header c"><input class="plan-name-input" id="name-c" type="text" value="Enterprise" oninput="calc()"/></div>
+          <div class="plan-body">
+            <div><div class="plan-label">Prix / mois</div><div class="input-wrap"><input class="plan-input" type="number" id="price-c" value="99" min="0" step="1" oninput="calc()"/><span class="unit">€</span></div></div>
+            <div><div class="plan-label">Taux de conversion</div><div class="input-wrap"><input class="plan-input" type="number" id="conv-c" value="8" min="0" max="100" oninput="calc()"/><span class="unit">%</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Résultats -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">03</span><span class="sec-title">Projections mensuelles</span></div></div>
+    <div class="sec-body">
+      <div class="results-grid">
+        <div class="result-plan"><div class="result-plan-head a" id="rn-a">Free</div><div class="result-plan-body">
+          <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" id="ru-a">—</span></div>
+          <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" id="rm-a">—</span></div>
+          <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" id="ra-a">—</span></div>
+        </div></div>
+        <div class="result-plan"><div class="result-plan-head b" id="rn-b">Pro</div><div class="result-plan-body">
+          <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" id="ru-b">—</span></div>
+          <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" id="rm-b">—</span></div>
+          <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" id="ra-b">—</span></div>
+        </div></div>
+        <div class="result-plan"><div class="result-plan-head c" id="rn-c">Enterprise</div><div class="result-plan-body">
+          <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" id="ru-c">—</span></div>
+          <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" id="rm-c">—</span></div>
+          <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" id="ra-c">—</span></div>
+        </div></div>
+      </div>
+      <div class="total-bar">
+        <div class="total-item"><div class="total-label">MRR total</div><div class="total-val hl" id="t-mrr">—</div></div>
+        <div class="total-item"><div class="total-label">ARR total</div><div class="total-val" id="t-arr">—</div></div>
+        <div class="total-item"><div class="total-label">Payants</div><div class="total-val" id="t-pay">—</div></div>
+        <div class="total-item"><div class="total-label">ARPU</div><div class="total-val" id="t-arpu">—</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">MRR par plan & projection 12 mois</div>
+        <canvas id="chart-bars" height="140"></canvas>
+        <div style="margin-top:20px"><div class="chart-title">Projection MRR sur 12 mois</div><canvas id="chart-line" height="140"></canvas></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="resetForm()">Réinitialiser</button>
+      <button class="btn btn-save" onclick="saveHist()">↓ Sauvegarder</button>
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-primary" onclick="window.print()">Imprimer</button>
+    </div>
+  </section>
+
+  <!-- 04 Comparaison -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">04</span><span class="sec-title">Comparaison avant / après</span></div></div>
+    <div class="sec-body">
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Scénario A</span><button class="btn btn-sm" onclick="setRef()">Définir</button></div>
+          <div class="compare-col-body" id="ref-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Cliquez "Définir".</p></div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-col-head"><span>Scénario B (actuel)</span></div>
+          <div class="compare-col-body" id="cur-body"><p style="font-size:13px;color:var(--ink-light);font-style:italic">Renseignez les paramètres.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Historique -->
+  <section>
+    <div class="sec-head"><div class="sec-head-l"><span class="sec-num">05</span><span class="sec-title">Historique des scénarios</span></div></div>
+    <div class="sec-body"><div id="hist-wrap"><p class="hist-empty">Aucun scénario sauvegardé.</p></div></div>
+    <div class="actions">
+      <button class="btn" onclick="clearHist()">Vider</button>
+      <button class="btn" onclick="exportHistCSV()">Export CSV</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  const COLORS=['#1a1a1a','#2d5a8e','#5a2d8e'];
+  let ref=null, lastR=null;
+  let hist=JSON.parse(localStorage.getItem('pf_h')||'[]');
+
+  const fE=n=>new Intl.NumberFormat('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:0}).format(n)+' €';
+  const fN=n=>new Intl.NumberFormat('fr-FR').format(Math.round(n));
+  const fD=()=>new Date().toLocaleDateString('fr-FR');
+
+  function calc(){
+    const total=parseFloat(document.getElementById('total').value)||0;
+    const growth=(parseFloat(document.getElementById('growth').value)||0)/100;
+    const churn=(parseFloat(document.getElementById('churn').value)||0)/100;
+    const plans=['a','b','c'].map(k=>({
+      k, name:document.getElementById('name-'+k).value||k,
+      price:parseFloat(document.getElementById('price-'+k).value)||0,
+      conv:parseFloat(document.getElementById('conv-'+k).value)||0,
+    }));
+    const convSum=plans.reduce((s,p)=>s+p.conv,0)||1;
+    plans.forEach(p=>{p.users=Math.round(total*(p.conv/convSum));p.mrr=p.users*p.price;p.arr=p.mrr*12;});
+    const totalMrr=plans.reduce((s,p)=>s+p.mrr,0);
+    const totalArr=totalMrr*12;
+    const paying=plans.filter(p=>p.price>0).reduce((s,p)=>s+p.users,0);
+    const arpu=paying>0?totalMrr/paying:0;
+
+    plans.forEach(p=>{
+      document.getElementById('rn-'+p.k).textContent=p.name;
+      document.getElementById('ru-'+p.k).textContent=fN(p.users);
+      document.getElementById('rm-'+p.k).textContent=fE(p.mrr);
+      document.getElementById('ra-'+p.k).textContent=fE(p.arr);
+    });
+    document.getElementById('t-mrr').textContent=fE(totalMrr);
+    document.getElementById('t-arr').textContent=fE(totalArr);
+    document.getElementById('t-pay').textContent=fN(paying);
+    document.getElementById('t-arpu').textContent=fE(arpu);
+
+    lastR={plans:plans.map(p=>({...p})),totalMrr,totalArr,paying,arpu,total,growth,churn,date:fD()};
+    renderBars(plans,totalMrr);
+    renderLine(totalMrr,growth,churn);
+    renderCompare();
+  }
+
+  function renderBars(plans,totalMrr){
+    const cv=document.getElementById('chart-bars');
+    const ctx=cv.getContext('2d');
+    const W=cv.parentElement.offsetWidth||800,H=140;
+    cv.width=W*2;cv.height=H*2;cv.style.width='100%';cv.style.height=H+'px';
+    ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+    const mx=Math.max(...plans.map(p=>p.mrr),1);
+    const bW=70,gap=60,total2=plans.length*(bW+gap)-gap;
+    const sx=(W-total2)/2,cH=H-44,tp=16;
+    plans.forEach((p,i)=>{
+      const x=sx+i*(bW+gap),h=Math.max(p.mrr/mx*cH,2),y=tp+cH-h;
+      ctx.fillStyle=COLORS[i];
+      ctx.beginPath();ctx.roundRect(x,y,bW,h,3);ctx.fill();
+      ctx.fillStyle='#333';ctx.font='500 9px IBM Plex Mono,monospace';ctx.textAlign='center';
+      ctx.fillText(fE(p.mrr),x+bW/2,y-5);
+      ctx.fillStyle='#aaa';ctx.font='400 9px IBM Plex Sans,sans-serif';
+      ctx.fillText(p.name,x+bW/2,H-8);
+    });
+  }
+
+  function renderLine(mrr,growth,churn){
+    const cv=document.getElementById('chart-line');
+    const ctx=cv.getContext('2d');
+    const W=cv.parentElement.offsetWidth||800,H=140;
+    cv.width=W*2;cv.height=H*2;cv.style.width='100%';cv.style.height=H+'px';
+    ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+    const net=growth-churn;
+    const pts=[];let v=mrr;
+    for(let i=0;i<=12;i++){pts.push(v);v*=(1+net);}
+    const mx=Math.max(...pts,1);
+    const pad={l:60,r:20,t:16,b:30};
+    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+    // grid
+    ctx.strokeStyle='#ede'; ctx.lineWidth=0.5;
+    [0,.25,.5,.75,1].forEach(f=>{
+      const y=pad.t+cH*(1-f);
+      ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
+      ctx.fillStyle='#bbb';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='right';
+      const v2=mx*f;ctx.fillText(v2>=1000?(v2/1000).toFixed(0)+'k':v2.toFixed(0),pad.l-4,y+3);
+    });
+    // line
+    ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1.5;ctx.beginPath();
+    pts.forEach((p,i)=>{
+      const x=pad.l+i*(cW/12),y=pad.t+cH*(1-p/mx);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // dots
+    pts.forEach((p,i)=>{
+      const x=pad.l+i*(cW/12),y=pad.t+cH*(1-p/mx);
+      ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();
+    });
+    // x labels
+    ctx.fillStyle='#bbb';ctx.font='9px IBM Plex Sans,sans-serif';ctx.textAlign='center';
+    [0,3,6,9,12].forEach(i=>{
+      const x=pad.l+i*(cW/12);
+      ctx.fillText('M'+i,x,H-8);
+    });
+  }
+
+  function setRef(){if(!lastR){alert('Calculez d\'abord.');return;}ref=JSON.parse(JSON.stringify(lastR));renderCompare();}
+
+  function renderCompare(){
+    const renderCol=(r,elId,isRef)=>{
+      const el=document.getElementById(elId);
+      if(!r){el.innerHTML='<p style="font-size:13px;color:var(--ink-light);font-style:italic">'+(isRef?'Cliquez "Définir".':'Renseignez les paramètres.')+'</p>';return;}
+      const rows=[
+        {l:'Utilisateurs',v:fN(r.total),raw:r.total,prev:ref?.total,low:false},
+        {l:'MRR total',v:fE(r.totalMrr),raw:r.totalMrr,prev:ref?.totalMrr,low:false},
+        {l:'ARR total',v:fE(r.totalArr),raw:r.totalArr,prev:ref?.totalArr,low:false},
+        {l:'Payants',v:fN(r.paying),raw:r.paying,prev:ref?.paying,low:false},
+        {l:'ARPU',v:fE(r.arpu),raw:r.arpu,prev:ref?.arpu,low:false},
+      ];
+      el.innerHTML=rows.map(row=>{
+        let badge='';
+        if(!isRef&&row.raw!=null&&row.prev!=null){
+          const d=row.raw-row.prev,p=row.prev?Math.abs(d/row.prev*100).toFixed(1):0;
+          const better=row.low?d<0:d>0,cls=d===0?'flat':better?'up':'dn',arrow=d===0?'—':d>0?'↑':'↓';
+          badge=`<span class="badge ${cls}">${arrow} ${p} %</span>`;
+        }
+        return `<div class="crow"><span class="crow-label">${row.l}</span><span style="display:flex;align-items:center"><span class="crow-val">${row.v}</span>${badge}</span></div>`;
+      }).join('');
+    };
+    renderCol(ref,'ref-body',true);
+    renderCol(lastR,'cur-body',false);
+  }
+
+  function saveHist(){
+    if(!lastR){alert('Aucun résultat.');return;}
+    hist.unshift({...lastR,id:Date.now()});
+    if(hist.length>20)hist=hist.slice(0,20);
+    localStorage.setItem('pf_h',JSON.stringify(hist));
+    renderHist();
+  }
+
+  function renderHist(){
+    const w=document.getElementById('hist-wrap');
+    if(!hist.length){w.innerHTML='<p class="hist-empty">Aucun scénario sauvegardé.</p>';return;}
+    w.innerHTML='<div class="hist-list">'+hist.map(h=>`
+      <div class="hist-item" onclick="loadHist(${h.id})">
+        <div class="hist-label">${h.date}</div>
+        <div class="hist-kpis">
+          <div><div class="hist-kpi-label">Utilisateurs</div><div class="hist-kpi-val">${fN(h.total)}</div></div>
+          <div><div class="hist-kpi-label">MRR</div><div class="hist-kpi-val">${fE(h.totalMrr)}</div></div>
+          <div><div class="hist-kpi-label">ARR</div><div class="hist-kpi-val">${fE(h.totalArr)}</div></div>
+          <div><div class="hist-kpi-label">Payants</div><div class="hist-kpi-val">${fN(h.paying)}</div></div>
+        </div>
+        <button class="hist-del" onclick="event.stopPropagation();delHist(${h.id})">×</button>
+      </div>`).join('')+'</div>';
+  }
+
+  function loadHist(id){
+    const h=hist.find(x=>x.id===id);if(!h)return;
+    document.getElementById('total').value=h.total;
+    document.getElementById('growth').value=(h.growth*100).toFixed(1);
+    document.getElementById('churn').value=(h.churn*100).toFixed(1);
+    ['a','b','c'].forEach((k,i)=>{
+      if(h.plans[i]){
+        document.getElementById('name-'+k).value=h.plans[i].name;
+        document.getElementById('price-'+k).value=h.plans[i].price;
+        document.getElementById('conv-'+k).value=h.plans[i].conv;
+      }
+    });
+    calc();
+  }
+
+  function delHist(id){hist=hist.filter(x=>x.id!==id);localStorage.setItem('pf_h',JSON.stringify(hist));renderHist();}
+  function clearHist(){if(!confirm('Vider l\'historique ?'))return;hist=[];localStorage.setItem('pf_h','[]');renderHist();}
+
+  function dlCSV(rows,name){
+    const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+    a.download=name;a.click();
+  }
+
+  function exportCSV(){
+    if(!lastR){alert('Aucun résultat.');return;}
+    const rows=[['Plan','Prix/mois','Conv %','Utilisateurs','MRR','ARR']];
+    lastR.plans.forEach(p=>rows.push([p.name,p.price,p.conv,Math.round(p.users),Math.round(p.mrr),Math.round(p.arr)]));
+    rows.push(['TOTAL','','',lastR.total,Math.round(lastR.totalMrr),Math.round(lastR.totalArr)]);
+    dlCSV(rows,'pricing_'+Date.now()+'.csv');
+  }
+
+  function exportHistCSV(){
+    if(!hist.length){alert('Historique vide.');return;}
+    const rows=[['Date','Utilisateurs','MRR','ARR','Payants','ARPU']];
+    hist.forEach(h=>rows.push([h.date,h.total,Math.round(h.totalMrr),Math.round(h.totalArr),h.paying,Math.round(h.arpu)]));
+    dlCSV(rows,'pricing_historique_'+Date.now()+'.csv');
+  }
+
+  function resetForm(){
+    document.getElementById('total').value=10000;
+    document.getElementById('growth').value=5;
+    document.getElementById('churn').value=3;
+    const def={a:{name:'Free',price:0,conv:70},b:{name:'Pro',price:29,conv:22},c:{name:'Enterprise',price:99,conv:8}};
+    ['a','b','c'].forEach(k=>{
+      document.getElementById('name-'+k).value=def[k].name;
+      document.getElementById('price-'+k).value=def[k].price;
+      document.getElementById('conv-'+k).value=def[k].conv;
+    });
+    calc();
+  }
+
+  renderHist();
+  calc();
+</script>
+</body>
+</html>
