@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaaS Toolkit Marketing</title>
+  <meta
+    name="description"
+    content="Page unique pour le benchmark concurrentiel, le pricing freemium et le ROI publicitaire."
+  />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/css/common.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="assets/css/benchmark-concurrentiel.css" />
+  <link rel="stylesheet" href="assets/css/pricing-freemium.css" />
+  <link rel="stylesheet" href="assets/css/roi-publicitaire.css" />
+</head>
+<body class="home-page">
+  <main class="shell">
+    <nav class="topbar" aria-label="Navigation principale">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">SC</span>  
+        <span>SaaS Toolkit</span>
+      </a>
+      <div class="tabs-nav" role="tablist" aria-label="Outils principaux">
+        <button class="tab-link active" type="button" data-tool-tab="benchmark" aria-selected="true">Benchmark</button>
+        <button class="tab-link" type="button" data-tool-tab="pricing" aria-selected="false">Pricing</button>
+        <button class="tab-link" type="button" data-tool-tab="roi" aria-selected="false">ROI</button>
+      </div>
+    </nav>
+
+    <section class="hero-card">
+      <p class="eyebrow">Suite marketing · fichier HTML unique</p>
+      <h1 class="page-title">Un seul point d'entree pour piloter vos analyses SaaS.</h1>
+      <p class="hero-copy">
+        Les trois outils du projet sont maintenant integres dans cette seule page HTML, avec navigation par onglets et assets CSS/JS conserves a part.
+      </p>
+      <div class="hero-meta">
+        <article class="meta-card">
+          <p class="meta-card-label">Positionnement</p>
+          <h2 class="meta-card-title">Benchmark concurrentiel</h2>
+          <p class="meta-card-text">Ponderez vos criteres, notez vos concurrents et suivez vos snapshots dans le temps.</p>
+        </article>
+        <article class="meta-card">
+          <p class="meta-card-label">Monetisation</p>
+          <h2 class="meta-card-title">Pricing freemium</h2>
+          <p class="meta-card-text">Projetez MRR, ARR, ARPU et croissance potentielle selon vos plans tarifaires.</p>
+        </article>
+        <article class="meta-card">
+          <p class="meta-card-label">Acquisition</p>
+          <h2 class="meta-card-title">ROI publicitaire</h2>
+          <p class="meta-card-text">Mesurez rentabilite, ROAS, cout par lead et qualite d'une campagne en un coup d'oeil.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="portal-card">
+      <div class="portal-header">
+        <div>
+          <p class="eyebrow">Navigation par onglets</p>
+          <h2 class="portal-heading">Basculer entre les outils sans quitter la page</h2>
+        </div>
+      </div>
+
+      <div class="portal-tabs" role="tablist" aria-label="Outils disponibles">
+        <button
+          class="portal-tab is-active"
+          type="button"
+          aria-selected="true"
+          data-tool-tab="benchmark"
+          data-kicker="Analyse de positionnement"
+          data-title="Benchmark concurrentiel"
+          data-summary="Comparez votre offre a vos concurrents, ajustez les poids de vos criteres et gardez un historique de vos evaluations."
+        >
+          <span class="portal-tab-label">Onglet 01</span>
+          <span class="portal-tab-title">Benchmark</span>
+          <span class="portal-tab-text">Notation par etoiles, radar concurrentiel et snapshots.</span>
+        </button>
+        <button
+          class="portal-tab"
+          type="button"
+          aria-selected="false"
+          data-tool-tab="pricing"
+          data-kicker="Projection de revenus"
+          data-title="Simulateur de pricing freemium"
+          data-summary="Modelisez vos plans, vos taux de conversion et votre trajectoire de MRR sur 12 mois."
+        >
+          <span class="portal-tab-label">Onglet 02</span>
+          <span class="portal-tab-title">Pricing</span>
+          <span class="portal-tab-text">Plans Free, Pro, Enterprise et comparaison de scenarios.</span>
+        </button>
+        <button
+          class="portal-tab"
+          type="button"
+          aria-selected="false"
+          data-tool-tab="roi"
+          data-kicker="Analyse d'acquisition"
+          data-title="Calculateur de ROI publicitaire"
+          data-summary="Mesurez ROI, ROAS, cout par lead et benchmark de performance par canal."
+        >
+          <span class="portal-tab-label">Onglet 03</span>
+          <span class="portal-tab-title">ROI</span>
+          <span class="portal-tab-text">Google Ads, Meta, LinkedIn, e-mail et autres canaux.</span>
+        </button>
+      </div>
+
+      <div class="portal-summary" aria-live="polite">
+        <p class="portal-summary-kicker" id="portal-summary-kicker">Analyse de positionnement</p>
+        <h3 class="portal-summary-title" id="portal-summary-title">Benchmark concurrentiel</h3>
+        <p class="portal-summary-text" id="portal-summary-text">
+          Comparez votre offre a vos concurrents, ajustez les poids de vos criteres et gardez un historique de vos evaluations.
+        </p>
+      </div>
+
+      <div class="tool-panels">
+        <div class="tool-panel" data-tool-panel="benchmark">
+          <div class="tool-stage-header">
+            <p class="tool-stage-label">Outil actif</p>
+            <h3 class="tool-stage-title">Benchmark concurrentiel</h3>
+            <p class="tool-stage-text">Comparez votre offre a vos concurrents, pesez vos criteres et suivez votre positionnement dans le temps.</p>
+          </div>
+
+          <div class="benchmark-tool" data-tool-root="benchmark">
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">01</span>
+                  <span class="sec-title">Acteurs du marche</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="comp-row" data-el="comp-row"></div>
+                <button class="btn-add" data-el="add-comp-btn" type="button">+ Ajouter un concurrent</button>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">02</span>
+                  <span class="sec-title">Criteres d'evaluation</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="crit-list" data-el="crit-list"></div>
+                <button class="btn-add" data-el="add-crit-btn" type="button">+ Ajouter un critere</button>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">03</span>
+                  <span class="sec-title">Notation (1 a 5 etoiles)</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="matrix-wrap">
+                  <table>
+                    <thead data-el="mthead"></thead>
+                    <tbody data-el="mtbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">04</span>
+                  <span class="sec-title">Resultats & visualisations</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="hbar-list" data-el="hbar-list"></div>
+                <div class="chart-grid chart-grid-spaced">
+                  <div>
+                    <div class="chart-title">Graphique radar</div>
+                    <canvas data-el="chart-radar" aria-label="Graphique radar du benchmark"></canvas>
+                  </div>
+                  <div>
+                    <div class="chart-title">Scores par critere</div>
+                    <canvas data-el="chart-crit" aria-label="Graphique des scores par critere"></canvas>
+                  </div>
+                </div>
+                <div class="insight" data-el="insight">Evaluez vos concurrents pour visualiser votre positionnement.</div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="reset-btn" type="button">Reinitialiser</button>
+                <button class="btn btn-save" data-el="save-btn" type="button">Sauvegarder</button>
+                <button class="btn" data-el="export-btn" type="button">Export CSV</button>
+                <button class="btn btn-primary" data-el="print-btn" type="button">Imprimer</button>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">05</span>
+                  <span class="sec-title">Comparaison avant / apres</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="compare-grid">
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Snapshot A</span>
+                      <button class="btn btn-sm" data-el="set-ref-btn" type="button">Capturer</button>
+                    </div>
+                    <div class="compare-col-body" data-el="ref-body">
+                      <p class="muted-note">Cliquez sur "Capturer".</p>
+                    </div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Snapshot B (actuel)</span>
+                    </div>
+                    <div class="compare-col-body" data-el="cur-body">
+                      <p class="muted-note">Renseignez les notations.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">06</span>
+                  <span class="sec-title">Historique des snapshots</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div data-el="hist-wrap">
+                  <p class="hist-empty">Aucun snapshot sauvegarde.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="clear-hist-btn" type="button">Vider</button>
+                <button class="btn" data-el="export-hist-btn" type="button">Export CSV</button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="tool-panel" data-tool-panel="pricing" hidden>
+          <div class="tool-stage-header">
+            <p class="tool-stage-label">Outil actif</p>
+            <h3 class="tool-stage-title">Simulateur de pricing freemium</h3>
+            <p class="tool-stage-text">Projetez vos revenus recurrents selon la repartition de vos utilisateurs, vos conversions et vos plans tarifaires.</p>
+          </div>
+
+          <div class="pricing-tool" data-tool-root="pricing">
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">01</span>
+                  <span class="sec-title">Base d'utilisateurs</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="global-fields">
+                  <div class="field">
+                    <label for="pf-total">Utilisateurs totaux</label>
+                    <div class="input-wrap">
+                      <input type="number" id="pf-total" data-el="total" value="10000" min="0" />
+                      <span class="unit">#</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="pf-growth">Croissance / mois</label>
+                    <div class="input-wrap">
+                      <input type="number" id="pf-growth" data-el="growth" value="5" min="0" max="100" />
+                      <span class="unit">%</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="pf-churn">Churn / mois</label>
+                    <div class="input-wrap">
+                      <input type="number" id="pf-churn" data-el="churn" value="3" min="0" max="100" />
+                      <span class="unit">%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">02</span>
+                  <span class="sec-title">Formules tarifaires</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="plans-grid">
+                  <div class="plan-card">
+                    <div class="plan-header a">
+                      <input class="plan-name-input" id="pf-name-a" data-el="name-a" type="text" value="Free" />
+                    </div>
+                    <div class="plan-body">
+                      <div>
+                        <div class="plan-label">Prix / mois</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-price-a" data-el="price-a" value="0" min="0" step="1" />
+                          <span class="unit">€</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="plan-label">Taux de conversion</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-conv-a" data-el="conv-a" value="70" min="0" max="100" />
+                          <span class="unit">%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="plan-card">
+                    <div class="plan-header b">
+                      <input class="plan-name-input" id="pf-name-b" data-el="name-b" type="text" value="Pro" />
+                    </div>
+                    <div class="plan-body">
+                      <div>
+                        <div class="plan-label">Prix / mois</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-price-b" data-el="price-b" value="29" min="0" step="1" />
+                          <span class="unit">€</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="plan-label">Taux de conversion</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-conv-b" data-el="conv-b" value="22" min="0" max="100" />
+                          <span class="unit">%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="plan-card">
+                    <div class="plan-header c">
+                      <input class="plan-name-input" id="pf-name-c" data-el="name-c" type="text" value="Enterprise" />
+                    </div>
+                    <div class="plan-body">
+                      <div>
+                        <div class="plan-label">Prix / mois</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-price-c" data-el="price-c" value="99" min="0" step="1" />
+                          <span class="unit">€</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="plan-label">Taux de conversion</div>
+                        <div class="input-wrap">
+                          <input class="plan-input" type="number" id="pf-conv-c" data-el="conv-c" value="8" min="0" max="100" />
+                          <span class="unit">%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">03</span>
+                  <span class="sec-title">Projections mensuelles</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="results-grid">
+                  <div class="result-plan">
+                    <div class="result-plan-head a" data-el="rn-a">Free</div>
+                    <div class="result-plan-body">
+                      <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" data-el="ru-a">-</span></div>
+                      <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" data-el="rm-a">-</span></div>
+                      <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" data-el="ra-a">-</span></div>
+                    </div>
+                  </div>
+                  <div class="result-plan">
+                    <div class="result-plan-head b" data-el="rn-b">Pro</div>
+                    <div class="result-plan-body">
+                      <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" data-el="ru-b">-</span></div>
+                      <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" data-el="rm-b">-</span></div>
+                      <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" data-el="ra-b">-</span></div>
+                    </div>
+                  </div>
+                  <div class="result-plan">
+                    <div class="result-plan-head c" data-el="rn-c">Enterprise</div>
+                    <div class="result-plan-body">
+                      <div class="rrow"><span class="rrow-label">Utilisateurs</span><span class="rrow-val" data-el="ru-c">-</span></div>
+                      <div class="rrow"><span class="rrow-label">MRR</span><span class="rrow-val" data-el="rm-c">-</span></div>
+                      <div class="rrow"><span class="rrow-label">ARR</span><span class="rrow-val" data-el="ra-c">-</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="total-bar">
+                  <div class="total-item"><div class="total-label">MRR total</div><div class="total-val hl" data-el="t-mrr">-</div></div>
+                  <div class="total-item"><div class="total-label">ARR total</div><div class="total-val" data-el="t-arr">-</div></div>
+                  <div class="total-item"><div class="total-label">Payants</div><div class="total-val" data-el="t-pay">-</div></div>
+                  <div class="total-item"><div class="total-label">ARPU</div><div class="total-val" data-el="t-arpu">-</div></div>
+                </div>
+
+                <div class="chart-wrap">
+                  <div class="chart-title">MRR par plan & projection 12 mois</div>
+                  <canvas data-el="chart-bars" aria-label="Repartition du MRR par plan"></canvas>
+                  <div class="chart-stack-gap">
+                    <div class="chart-title">Projection MRR sur 12 mois</div>
+                    <canvas data-el="chart-line" aria-label="Projection du MRR sur 12 mois"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="reset-btn" type="button">Reinitialiser</button>
+                <button class="btn btn-save" data-el="save-btn" type="button">Sauvegarder</button>
+                <button class="btn" data-el="export-btn" type="button">Export CSV</button>
+                <button class="btn btn-primary" data-el="print-btn" type="button">Imprimer</button>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">04</span>
+                  <span class="sec-title">Comparaison avant / apres</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="compare-grid">
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Scenario A</span>
+                      <button class="btn btn-sm" data-el="set-ref-btn" type="button">Definir</button>
+                    </div>
+                    <div class="compare-col-body" data-el="ref-body">
+                      <p class="muted-note">Cliquez sur "Definir".</p>
+                    </div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Scenario B (actuel)</span>
+                    </div>
+                    <div class="compare-col-body" data-el="cur-body">
+                      <p class="muted-note">Renseignez les parametres.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">05</span>
+                  <span class="sec-title">Historique des scenarios</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div data-el="hist-wrap">
+                  <p class="hist-empty">Aucun scenario sauvegarde.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="clear-hist-btn" type="button">Vider</button>
+                <button class="btn" data-el="export-hist-btn" type="button">Export CSV</button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="tool-panel" data-tool-panel="roi" hidden>
+          <div class="tool-stage-header">
+            <p class="tool-stage-label">Outil actif</p>
+            <h3 class="tool-stage-title">Calculateur de ROI publicitaire</h3>
+            <p class="tool-stage-text">Mesurez rapidement la rentabilite d'une campagne, comparez-la a vos references et identifiez les leviers prioritaires.</p>
+          </div>
+
+          <div class="roi-tool" data-tool-root="roi">
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">01</span>
+                  <span class="sec-title">Campagne</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="chips">
+                  <button class="chip active" type="button" data-canal="Google Ads">Google Ads</button>
+                  <button class="chip" type="button" data-canal="Facebook / Instagram">Facebook / Instagram</button>
+                  <button class="chip" type="button" data-canal="LinkedIn">LinkedIn</button>
+                  <button class="chip" type="button" data-canal="Email">E-mail</button>
+                  <button class="chip" type="button" data-canal="Autre">Autre</button>
+                </div>
+                <div class="fields">
+                  <div class="field">
+                    <label for="roi-budget">Budget investi</label>
+                    <div class="input-wrap">
+                      <input type="number" id="roi-budget" data-el="budget" min="0" step="10" placeholder="0" />
+                      <span class="unit">€</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="roi-revenus">Revenus generes</label>
+                    <div class="input-wrap">
+                      <input type="number" id="roi-revenus" data-el="revenus" min="0" step="10" placeholder="0" />
+                      <span class="unit">€</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="roi-leads">Nombre de leads</label>
+                    <div class="input-wrap">
+                      <input type="number" id="roi-leads" data-el="leads" min="0" step="1" placeholder="0" />
+                      <span class="unit">#</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="roi-clics">Clics</label>
+                    <div class="input-wrap">
+                      <input type="number" id="roi-clics" data-el="clics" min="0" step="1" placeholder="0" />
+                      <span class="unit">#</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">02</span>
+                  <span class="sec-title">Resultats</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="kpi-strip">
+                  <div class="kpi primary">
+                    <div class="kpi-label">ROI</div>
+                    <div class="kpi-value" data-el="r-roi">-</div>
+                    <div class="kpi-delta" data-el="d-roi"></div>
+                  </div>
+                  <div class="kpi">
+                    <div class="kpi-label">ROAS</div>
+                    <div class="kpi-value" data-el="r-roas">-</div>
+                    <div class="kpi-delta" data-el="d-roas"></div>
+                  </div>
+                  <div class="kpi">
+                    <div class="kpi-label">Cout / lead</div>
+                    <div class="kpi-value" data-el="r-cpl">-</div>
+                    <div class="kpi-delta" data-el="d-cpl"></div>
+                  </div>
+                  <div class="kpi">
+                    <div class="kpi-label">Taux conv.</div>
+                    <div class="kpi-value" data-el="r-conv">-</div>
+                    <div class="kpi-delta" data-el="d-conv"></div>
+                  </div>
+                </div>
+
+                <div class="score-wrap">
+                  <div class="score-header">
+                    <span class="score-label">Score de rentabilite</span>
+                    <span class="score-num" data-el="score-num">-</span>
+                  </div>
+                  <div class="score-track"><div class="score-fill" data-el="score-fill"></div></div>
+                  <div class="score-ticks"><span>Deficitaire</span><span>Neutre</span><span>Rentable</span><span>Excellent</span></div>
+                </div>
+
+                <div class="chart-wrap">
+                  <div class="chart-title">Budget · Revenus · Benefice</div>
+                  <canvas data-el="chart-main" aria-label="Comparaison budget, revenus et benefice"></canvas>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">03</span>
+                  <span class="sec-title">Analyse</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="analyse" data-el="analyse">
+                  <span class="analyse-icon">-</span>
+                  <span>Renseignez votre budget et vos revenus pour obtenir une analyse.</span>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="reset-btn" type="button">Reinitialiser</button>
+                <button class="btn btn-save" data-el="save-btn" type="button">Sauvegarder</button>
+                <button class="btn" data-el="export-btn" type="button">Export CSV</button>
+                <button class="btn btn-primary" data-el="print-btn" type="button">Imprimer</button>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">04</span>
+                  <span class="sec-title">Comparaison avant / apres</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div class="compare-grid">
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Reference (A)</span>
+                      <button class="btn btn-sm" data-el="set-ref-btn" type="button">Definir</button>
+                    </div>
+                    <div class="compare-col-body" data-el="ref-body">
+                      <p class="muted-note">Cliquez sur "Definir" pour capturer la campagne actuelle.</p>
+                    </div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-col-head">
+                      <span>Actuelle (B)</span>
+                    </div>
+                    <div class="compare-col-body" data-el="cur-body">
+                      <p class="muted-note">Renseignez les parametres ci-dessus.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="sec-head">
+                <div class="sec-head-l">
+                  <span class="sec-num">05</span>
+                  <span class="sec-title">Historique</span>
+                </div>
+              </div>
+              <div class="sec-body">
+                <div data-el="hist-wrap">
+                  <p class="hist-empty">Aucune campagne sauvegardee.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn" data-el="clear-hist-btn" type="button">Vider</button>
+                <button class="btn" data-el="export-hist-btn" type="button">Export CSV</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/shared-layout.js" defer></script>
+  <script src="assets/js/benchmark-concurrentiel.js" defer></script>
+  <script src="assets/js/pricing-freemium.js" defer></script>
+  <script src="assets/js/roi-publicitaire.js" defer></script>
+  <script src="assets/js/index.js" defer></script>
+</body>
+</html>

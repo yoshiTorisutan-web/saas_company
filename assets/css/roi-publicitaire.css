@@ -1,0 +1,286 @@
+.roi-tool label {
+  color: var(--ink-light);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.roi-tool .fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+
+.roi-tool .field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.roi-tool .input-wrap {
+  position: relative;
+}
+
+.roi-tool input[type="number"] {
+  width: 100%;
+  padding: 12px 46px 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1rem;
+  outline: 0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  -moz-appearance: textfield;
+}
+
+.roi-tool input[type="number"]::-webkit-outer-spin-button,
+.roi-tool input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.roi-tool input[type="number"]:focus {
+  border-color: var(--ink);
+  background: #ffffff;
+}
+
+.roi-tool .unit {
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  transform: translateY(-50%);
+  color: var(--ink-light);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.roi-tool .chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.roi-tool .chip {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-mid);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.roi-tool .chip:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.roi-tool .chip.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.roi-tool .kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--border);
+}
+
+.roi-tool .kpi {
+  padding: 18px 16px;
+  background: #ffffff;
+}
+
+.roi-tool .kpi.primary {
+  background: var(--ink);
+}
+
+.roi-tool .kpi-label {
+  margin-bottom: 8px;
+  color: var(--ink-light);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.roi-tool .kpi.primary .kpi-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.roi-tool .kpi-value {
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.roi-tool .kpi.primary .kpi-value {
+  color: #ffffff;
+}
+
+.roi-tool .kpi-value.good {
+  color: var(--good);
+}
+
+.roi-tool .kpi-value.warn {
+  color: var(--warn);
+}
+
+.roi-tool .kpi-value.bad {
+  color: var(--bad);
+}
+
+.roi-tool .kpi-delta {
+  margin-top: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+}
+
+.roi-tool .kpi-delta.up {
+  color: var(--good);
+}
+
+.roi-tool .kpi-delta.dn {
+  color: var(--bad);
+}
+
+.roi-tool .kpi-delta.flat {
+  color: var(--ink-light);
+}
+
+.roi-tool .score-wrap {
+  margin-bottom: 24px;
+}
+
+.roi-tool .score-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.roi-tool .score-label {
+  color: var(--ink-light);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.roi-tool .score-num {
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+
+.roi-tool .score-num.good {
+  color: var(--good);
+}
+
+.roi-tool .score-num.warn {
+  color: var(--warn);
+}
+
+.roi-tool .score-num.bad {
+  color: var(--bad);
+}
+
+.roi-tool .score-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.roi-tool .score-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease, background-color 0.2s ease;
+}
+
+.roi-tool .score-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: var(--ink-light);
+  font-size: 0.58rem;
+}
+
+.roi-tool .analyse {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--ink-mid);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.roi-tool .analyse.good {
+  border-color: rgba(29, 107, 62, 0.2);
+  background: var(--good-bg);
+  color: var(--good);
+}
+
+.roi-tool .analyse.warn {
+  border-color: rgba(138, 94, 0, 0.2);
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.roi-tool .analyse.bad {
+  border-color: rgba(139, 28, 28, 0.2);
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.roi-tool .analyse-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+  font-size: 0.95rem;
+}
+
+.roi-tool .chart-wrap {
+  margin-top: 20px;
+}
+
+.roi-tool .hist-canal {
+  width: 110px;
+  flex-shrink: 0;
+  color: var(--ink-light);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.roi-tool .hist-date {
+  flex-shrink: 0;
+  color: var(--ink-light);
+  font-size: 0.68rem;
+}
+
+@media (max-width: 760px) {
+  .roi-tool .fields,
+  .roi-tool .kpi-strip {
+    grid-template-columns: 1fr;
+  }
+}

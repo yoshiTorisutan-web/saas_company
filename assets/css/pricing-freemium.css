@@ -1,0 +1,228 @@
+.pricing-tool label {
+  color: var(--ink-light);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pricing-tool .field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pricing-tool .global-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pricing-tool .input-wrap {
+  position: relative;
+}
+
+.pricing-tool input[type="number"] {
+  width: 100%;
+  padding: 11px 42px 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1rem;
+  outline: 0;
+  transition: border-color 0.15s ease;
+  -moz-appearance: textfield;
+}
+
+.pricing-tool input[type="number"]::-webkit-outer-spin-button,
+.pricing-tool input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.pricing-tool input[type="number"]:focus,
+.pricing-tool input[type="text"]:focus {
+  border-color: var(--ink);
+}
+
+.pricing-tool .unit {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: var(--ink-light);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.pricing-tool .plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pricing-tool .plan-card,
+.pricing-tool .result-plan {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.pricing-tool .plan-header {
+  padding: 14px 18px;
+}
+
+.pricing-tool .plan-header.a,
+.pricing-tool .result-plan-head.a {
+  background: #1a1a1a;
+}
+
+.pricing-tool .plan-header.b,
+.pricing-tool .result-plan-head.b {
+  background: #2d5a8e;
+}
+
+.pricing-tool .plan-header.c,
+.pricing-tool .result-plan-head.c {
+  background: #5a2d8e;
+}
+
+.pricing-tool .plan-name-input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pricing-tool .plan-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.pricing-tool .plan-label {
+  margin-bottom: 5px;
+  color: var(--ink-light);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pricing-tool input.plan-input {
+  padding: 9px 38px 9px 12px;
+  font-size: 0.95rem;
+}
+
+.pricing-tool .results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pricing-tool .result-plan-head {
+  padding: 10px 16px;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pricing-tool .result-plan-body {
+  padding: 16px;
+}
+
+.pricing-tool .rrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pricing-tool .rrow:last-child {
+  border-bottom: 0;
+}
+
+.pricing-tool .rrow-label {
+  color: var(--ink-light);
+  font-size: 0.72rem;
+}
+
+.pricing-tool .rrow-val {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.pricing-tool .total-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: var(--ink);
+}
+
+.pricing-tool .total-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pricing-tool .total-label {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pricing-tool .total-val {
+  color: #ffffff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.pricing-tool .total-val.hl {
+  color: #a8d5b8;
+}
+
+.pricing-tool .chart-wrap {
+  margin-bottom: 0;
+}
+
+.pricing-tool .chart-stack-gap {
+  margin-top: 20px;
+}
+
+.pricing-tool .hist-label {
+  flex-shrink: 0;
+  color: var(--ink-light);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .pricing-tool .global-fields,
+  .pricing-tool .plans-grid,
+  .pricing-tool .results-grid {
+    grid-template-columns: 1fr;
+  }
+}

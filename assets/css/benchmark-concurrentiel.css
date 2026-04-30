@@ -1,0 +1,261 @@
+.benchmark-tool .comp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.benchmark-tool .comp-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.benchmark-tool .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.benchmark-tool .comp-tag input {
+  width: 120px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.84rem;
+}
+
+.benchmark-tool .rm-btn {
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-light);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.benchmark-tool .rm-btn:hover {
+  color: var(--bad);
+}
+
+.benchmark-tool .crit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.benchmark-tool .crit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.benchmark-tool .crit-name {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.84rem;
+  outline: 0;
+}
+
+.benchmark-tool .crit-name:focus,
+.benchmark-tool .w-input:focus {
+  border-color: var(--ink);
+}
+
+.benchmark-tool .w-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.benchmark-tool .w-label {
+  color: var(--ink-light);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.benchmark-tool .w-input {
+  width: 58px;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  text-align: center;
+  outline: 0;
+  -moz-appearance: textfield;
+}
+
+.benchmark-tool .w-input::-webkit-outer-spin-button,
+.benchmark-tool .w-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.benchmark-tool .matrix-wrap {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+.benchmark-tool table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+.benchmark-tool thead th {
+  padding: 10px 14px;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.benchmark-tool thead th:first-child {
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink-light);
+  text-align: left;
+}
+
+.benchmark-tool tbody tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.benchmark-tool tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.benchmark-tool tbody td {
+  padding: 10px 14px;
+}
+
+.benchmark-tool tbody td:first-child {
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.benchmark-tool .star-group {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.benchmark-tool .star {
+  color: var(--border);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.1s ease;
+}
+
+.benchmark-tool .star.on {
+  color: #f5b700;
+}
+
+.benchmark-tool .chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.benchmark-tool .chart-grid-spaced {
+  margin-bottom: 24px;
+}
+
+.benchmark-tool .hbar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.benchmark-tool .hbar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.benchmark-tool .hbar-name {
+  width: 130px;
+  flex-shrink: 0;
+  overflow: hidden;
+  color: var(--ink-mid);
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.benchmark-tool .hbar-track {
+  flex: 1;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.benchmark-tool .hbar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.benchmark-tool .hbar-val {
+  width: 44px;
+  flex-shrink: 0;
+  color: var(--ink-mid);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.benchmark-tool .insight {
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--ink-mid);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.benchmark-tool .hist-date {
+  width: 92px;
+  flex-shrink: 0;
+  color: var(--ink-light);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.benchmark-tool .empty-table {
+  color: var(--ink-light);
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  .benchmark-tool .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
